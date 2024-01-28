@@ -14,7 +14,14 @@ Environment=RCLONE_CONF="home/kay/.config/rclone/rclone.conf"
 Environment=RCLONE_TEMP_DIR="/tmp/rclone/%u/%i"
 Environment=RCLONE_RC_ON="false"
 
-ExecStart=/usr/bin/rclone --vfs-cache-mode writes mount --config="${RCLONE_CONF}" --allow-non-empty "OneDrive:Musics" "/home/kay/OneDrive/Musics"
+ExecStart=/usr/bin/rclone --vfs-cache-mode writes mount "OneDrive:Musics" "/home/kay/OneDrive/Musics" \
+                          --config="${RCLONE_CONF}" \
+                          --umask=002 \
+                          --uid=0110 --gid=0117 \
+                          --poll-interval 30s \
+                          --dir-perms=0770 --file-perms=0664 --allow-other \
+                          --log-level DEBUG \
+                          --log-file /var/log/rclone-mount.log
 
 ExecStop=/bin/fusermount -uz /home/kay/OneDrive/Musics
 
