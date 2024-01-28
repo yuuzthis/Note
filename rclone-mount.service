@@ -1,0 +1,26 @@
+[Unit]
+Description=RClone mount of users remote %i using filesystem permissions
+Documentation=http://rclone.org/docs/
+After=network-online.target
+
+[Service]
+Type=notify
+#Set up environment
+Environment=REMOTE_NAME="OneDrive"
+Environment=REMOTE_PATH="Musics"
+Environment=MOUNT_DIR="%h/%i"
+Environment=POST_MOUNT_SCRIPT=""
+Environment=RCLONE_CONF="home/kay/.config/rclone/rclone.conf"
+Environment=RCLONE_TEMP_DIR="/tmp/rclone/%u/%i"
+Environment=RCLONE_RC_ON="false"
+
+ExecStart=/usr/bin/rclone --vfs-cache-mode writes mount --config="${RCLONE_CONF}" --allow-non-empty "OneDrive:Musics" "/home/kay/OneDrive/Musics"
+
+ExecStop=/bin/fusermount -uz /home/kay/OneDrive/Musics
+
+#Restart info
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target
